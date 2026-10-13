@@ -117,7 +117,18 @@ button:disabled { opacity: .6; cursor: default; }
 .teams { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
 .teams li { background: #f3e6d4; border-radius: 99px; padding: 4px 4px 4px 12px; font-size: .95rem; }
 .teams li.muted { background: none; }
-.progress { text-align: center; font-size: 1.1rem; }
+.progress { text-align: center; margin: 8px 0; }
+.progress-count { font-family: var(--head); font-weight: 800; font-size: 3rem; line-height: 1; color: var(--brand); }
+.progress-count b { color: var(--ochre); }
+.progress-label { color: var(--muted); font-weight: 600; margin: 4px 0 10px; }
+.progress.all-done .progress-label { color: var(--good); }
+.progress-bar { display: flex; height: 14px; background: var(--line); border-radius: 99px; overflow: hidden; }
+.progress-bar .done { background: var(--good); }
+.progress-bar .busy { background: var(--ochre); }
+.progress-legend { display: flex; justify-content: center; flex-wrap: wrap; gap: 4px 14px; margin-top: 8px; font-size: .9rem; color: var(--muted); }
+.progress-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--line); margin-right: 5px; }
+.progress-legend i.done { background: var(--good); }
+.progress-legend i.busy { background: var(--ochre); }
 .groups { list-style: none; padding: 0; margin: 8px 0 12px; }
 .group { display: flex; align-items: center; gap: 10px; padding: 10px 12px; margin: 6px 0; border-radius: 10px; cursor: pointer; border: 2px solid transparent; }
 .group.correct { background: var(--good-bg); }

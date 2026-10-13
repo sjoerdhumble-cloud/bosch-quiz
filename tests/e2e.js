@@ -50,7 +50,7 @@ await players[0].click('#submit');
 await players[1].click('.option:nth-child(1)');
 await players[1].click('#submit');
 await players[2].click('.option:nth-child(2)'); // niet verstuurd: telt zonder bonus
-await host.waitForSelector('text=2 van 3 teams ingeleverd');
+await host.waitForSelector('.progress-count >> text=3');
 await shot(host, '04-quizmaster-vraag');
 await host.click('[data-act=close]');
 await players[0].waitForSelector('.result.correct');
@@ -68,7 +68,7 @@ await players[1].fill('.answer', 'in 1516');
 await players[1].click('#submit');
 await players[2].fill('.answer', '1600');
 await players[2].click('#submit');
-await host.waitForSelector('text=3 van 3 teams ingeleverd');
+await host.waitForSelector('text=Iedereen heeft ingeleverd');
 await host.click('[data-act=close]');
 await host.waitForSelector('.group.doubt');
 await players[1].waitForSelector('.result.doubt');
