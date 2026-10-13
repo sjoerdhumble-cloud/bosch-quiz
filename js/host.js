@@ -70,8 +70,11 @@ function answersFor(pid) {
 function questionHtml() {
   const l = live();
   const ans = answersFor(l.partId);
-  const done = Object.values(ans).filter((a) => a.done).length;
-  const busy = Object.values(ans).length - done;
+  const total = teamIds().length;
+  const entries = teamIds().map((id) => ans[id]).filter(Boolean);
+  const done = entries.filter((a) => a.done).length;
+  const busy = entries.length - done;
+  const pct = (n) => (total ? (n / total) * 100 : 0).toFixed(1);
   const qs = l.questions.map((pq) => {
     const q = S.questions[pq.id];
     return `<div class="question"><h2>${esc(q.text)}</h2>${photoHtml(q)}<p class="muted">Antwoord: <b>${esc(q.answer)}</b> · ${q.points} punten</p></div>`;
@@ -79,7 +82,12 @@ function questionHtml() {
   return `<section class="card">
     <div class="sub">${partLabel(l)}</div>
     <div id="timer"></div>
-    <p class="progress"><b>${done}</b> van ${teamIds().length} teams ingeleverd${busy ? ` · ${busy} bezig` : ''}</p>
+    <div class="progress ${total && done === total ? 'all-done' : ''}">
+      <div class="progress-count"><b>${done + busy}</b> / ${total}</div>
+      <div class="progress-label">${total && done === total ? 'Iedereen heeft ingeleverd' : 'teams hebben geantwoord'}</div>
+      <div class="progress-bar"><span class="done" style="width:${pct(done)}%"></span><span class="busy" style="width:${pct(busy)}%"></span></div>
+      <div class="progress-legend"><span><i class="done"></i>${done} ingeleverd</span><span><i class="busy"></i>${busy} bezig</span><span><i></i>${total - done - busy} nog niets</span></div>
+    </div>
     <div class="row">
       <button class="secondary" data-act="extend">+30 sec</button>
       <button class="primary" data-act="close">Nu sluiten</button>
