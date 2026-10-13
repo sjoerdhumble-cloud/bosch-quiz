@@ -1,0 +1,10 @@
+{
+  "name": "bosch-quiz",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "e2e": "node tests/e2e.js",
+    "serve": "npx http-server -p 8080 -c-1 ."
+  }
+}

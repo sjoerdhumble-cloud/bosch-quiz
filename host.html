@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#c5863f">
+  <meta name="robots" content="noindex">
+  <title>Quizmaster</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:wght@500;700;800&family=Raleway:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body class="host">
+  <div id="offline" class="offline" hidden>Geen verbinding. Acties worden uitgevoerd zodra er weer bereik is.</div>
+  <header class="top"><span class="brand">Quizmaster</span><span id="mode" class="team-tag" hidden>testmodus</span></header>
+  <main>
+    <div id="panel"><p class="center muted">Laden…</p></div>
+
+    <details id="setup" class="card">
+      <summary>Vragen en instellingen</summary>
+      <p id="summary" class="muted"></p>
+      <label>Link naar je Google Sheet
+        <input id="sheet" placeholder="https://docs.google.com/spreadsheets/d/…">
+      </label>
+      <button id="load-sheet" class="primary">Vragen laden uit Sheet</button>
+      <label class="file">Of kies een CSV-bestand
+        <input id="csv-file" type="file" accept=".csv,text/csv">
+      </label>
+      <p class="muted">Voorbeeld en uitleg: <a href="voorbeeld-vragen.csv" download>voorbeeld-vragen.csv</a></p>
+      <div id="setup-status"></div>
+      <hr>
+      <label>Naam van de quiz <input id="title" maxlength="40"></label>
+      <label>Snelheidsbonus (% extra voor direct antwoorden) <input id="bonus" type="number" min="0" max="100" step="5"></label>
+      <button id="save-settings" class="secondary">Opslaan</button>
+      <hr>
+      <p class="muted">Link voor spelers: <a id="player-link" target="_blank"></a></p>
+      <div class="row">
+        <button id="reset" class="secondary">Quiz opnieuw beginnen</button>
+        <button id="reset-teams" class="secondary danger">Alle teams verwijderen</button>
+      </div>
+    </details>
+  </main>
+  <script type="module" src="js/host.js"></script>
+</body>
+</html>

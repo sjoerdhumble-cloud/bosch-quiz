@@ -1,0 +1,11 @@
+ronde,rondenaam,blok,type,vraag,opties,antwoord,alternatieven,punten,seconden,foto
+1,Bierkennis,,mc,Welk ingrediënt geeft bier vooral zijn bittere smaak?,Gist|Hop|Mout|Water,B,,10,45,
+1,,,open,"In welk jaar werd het Duitse Reinheitsgebot, de beroemde zuiverheidswet voor bier, ingevoerd?",,1516,,10,60,
+1,,,mc,Pils is genoemd naar een stad. In welk land ligt die stad?,Duitsland|Tsjechië|Oostenrijk|België,Tsjechië,,10,45,
+1,,,open,Waar staan de letters IPA voor?,,India Pale Ale,,10,60,
+2,Snelle vijf,blok1,open,Van welk graan wordt mout meestal gemaakt?,,gerst,,10,30,
+2,,blok1,open,"Gist zet suiker om in alcohol en …?",,koolzuur,CO2|koolstofdioxide|koolzuurgas,10,30,
+2,,blok1,mc,Een lager-bier wordt gebrouwen met …,Bovengisting|Ondergisting|Spontane gisting,Ondergisting,,10,30,
+2,,blok1,open,Hoe heet Belgisch tarwebier met koriander en sinaasappelschil?,,witbier,wit|blanche,10,30,
+2,,blok1,mc,Tot welke plantenfamilie hoort hop?,Grassen|Hennepfamilie|Rozenfamilie,Hennepfamilie,,10,30,
+3,Finale,,open,Noem de vier basisingrediënten van bier (in willekeurige volgorde).,,"water, mout, hop, gist","water mout hop gist|mout hop gist water|water hop mout gist",20,90,

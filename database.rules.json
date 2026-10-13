@@ -1,0 +1,10 @@
+{
+  "rules": {
+    "q": {
+      "$quiz": {
+        ".read": true,
+        ".write": true
+      }
+    }
+  }
+}
