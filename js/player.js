@@ -159,7 +159,7 @@ function standingsScreen() {
   const mine = me ? `<p class="mine">Jullie staan op plek <b>${me.rank}</b> met <b>${me.score}</b> punten</p>` : '';
   return `${header()}<main class="card">
     <h1>${esc(s.title || 'Tussenstand')}</h1>${mine}
-    ${standingsHtml(s.list, { highlight: teamId, limit: 10, final: live.phase === 'final' })}</main>`;
+    ${standingsHtml(s.list, { highlight: teamId, limit: s.top || 10, final: live.phase === 'final' })}</main>`;
 }
 
 // --- Invoer ---
