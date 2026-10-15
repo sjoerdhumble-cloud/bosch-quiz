@@ -1,5 +1,6 @@
 import { connect } from './backend.js';
 import { scorePart, cutoff } from './scoring.js';
+import { collageHtml, winnerHtml, celebrate, preloadPhotos } from './finale.js';
 import { esc, quizCode, timerHtml, partLabel, photoHtml, standingsHtml } from './common.js';
 
 const code = quizCode();
@@ -67,6 +68,8 @@ function render() {
   if (!live || live.phase === 'lobby') return show(`lobby:${team().name}:${Object.keys(teams).length}`, lobbyHtml);
   if (live.phase === 'question') return show(`q:${live.partId}:${locked()}`, questionHtml, tick);
   if (live.phase === 'closed') return show(`c:${live.partId}:${JSON.stringify([entry, judgments])}`, closedHtml);
+  if (live.phase === 'photos') return show('photos', () => `${header()}<main>${collageHtml()}</main>`);
+  if (live.phase === 'winner') return show(`w:${JSON.stringify(live.standings?.list)}`, winnerScreen, () => celebrate(app));
   if (live.phase === 'standings' || live.phase === 'final') return show(`s:${JSON.stringify(live.standings)}`, standingsScreen);
 }
 
@@ -162,6 +165,11 @@ function standingsScreen() {
     ${standingsHtml(s.list, { highlight: teamId, limit: s.top || 10, final: live.phase === 'final' })}</main>`;
 }
 
+function winnerScreen() {
+  const list = live.standings?.list || [];
+  return winnerHtml(list, list.find((r) => r.id === teamId));
+}
+
 // --- Invoer ---
 
 app.addEventListener('submit', (e) => {
@@ -243,5 +251,6 @@ function submit() {
   render();
 }
 
+preloadPhotos();
 setInterval(() => live?.phase === 'question' && render(), 250);
 render();

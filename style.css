@@ -141,3 +141,42 @@ details summary { font-weight: 700; cursor: pointer; font-family: var(--head); f
 hr { border: 0; border-top: 1px solid var(--line); margin: 16px 0; }
 
 .offline { position: sticky; top: 0; z-index: 10; background: var(--bad); color: #fff; text-align: center; padding: 8px 12px; font-weight: 600; font-size: .95rem; }
+
+/* Afsluiting: fotocollage en winnaar */
+.collage-screen { text-align: center; padding: 8px 0 24px; overflow: hidden; }
+.collage-title { font-size: 2.6rem; margin-bottom: 0; }
+.collage-sub { color: var(--muted); font-weight: 600; margin: 4px 0 8px; }
+.collage { display: grid; grid-template-columns: 1fr 1fr; align-items: start; gap: 14px 10px; padding: 18px 10px; max-width: 560px; margin: 0 auto; }
+.polaroid { margin: 0; background: #fff; padding: 8px 8px 26px; border-radius: 4px; box-shadow: 0 6px 18px rgba(59,35,20,.22);
+  position: relative; opacity: 0; animation: drop-in .7s cubic-bezier(.2,1.4,.4,1) forwards; }
+.polaroid img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 2px; }
+.polaroid::before { content: ''; position: absolute; top: -9px; left: 50%; width: 56px; height: 18px; margin-left: -28px;
+  background: rgba(206,197,182,.85); transform: rotate(-3deg); box-shadow: 0 1px 2px rgba(0,0,0,.1); }
+.polaroid.p1 { --rot: -6deg; animation-delay: .1s; }
+.polaroid.p2 { --rot: 5deg; animation-delay: .5s; margin-top: 18px; }
+.polaroid.p3 { --rot: 4deg; animation-delay: .9s; margin-top: -10px; }
+.polaroid.p4 { --rot: -4deg; animation-delay: 1.3s; margin-top: 8px; }
+.polaroid.p2 img, .polaroid.p3 img { aspect-ratio: 3 / 4; }
+.collage-wait { font-family: var(--head); font-size: 1.3rem; font-weight: 700; color: var(--ochre); animation: pulse 1.6s ease-in-out infinite; }
+.collage-screen > button { max-width: 560px; margin-top: 8px; }
+@keyframes drop-in { from { opacity: 0; transform: translateY(-40px) scale(1.3) rotate(0); } to { opacity: 1; transform: rotate(var(--rot)); } }
+@keyframes pulse { 50% { opacity: .45; } }
+
+.winner-screen { position: fixed; inset: 0; z-index: 20; display: flex; align-items: center; justify-content: center; padding: 24px 16px;
+  background: radial-gradient(circle at 50% 40%, #6b5150 0%, #3a2c2b 55%, #1f1716 100%); color: #fff; text-align: center; }
+.winner-screen .fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.winner-card { position: relative; max-width: 560px; width: 100%; }
+.winner-lead { font-family: var(--head); font-size: 1.4rem; letter-spacing: .08em; text-transform: uppercase; color: var(--beige); margin: 0 0 8px;
+  opacity: 0; animation: fade-up .8s .2s forwards; }
+.winner-name { font-size: clamp(2.4rem, 12vw, 4.5rem); color: #f2c14e; text-shadow: 0 4px 24px rgba(242,193,78,.45); word-break: break-word;
+  opacity: 0; animation: pop 1s 1s cubic-bezier(.2,1.6,.4,1) forwards; }
+.winner-name::after { display: none; }
+.winner-name span { display: block; }
+.winner-name .amp { font-size: .5em; color: var(--beige); }
+.winner-score { font-size: 1.3rem; font-weight: 700; margin: 8px 0; opacity: 0; animation: fade-up .8s 1.8s forwards; }
+.winner-me { font-size: 1.2rem; font-weight: 700; background: rgba(255,255,255,.12); border-radius: 10px; padding: 10px; opacity: 0; animation: fade-up .8s 2.2s forwards; }
+.winner-me.other { font-weight: 600; font-size: 1rem; }
+.winner-card button { margin-top: 24px; opacity: 0; animation: fade-up .8s 2.4s forwards; }
+button.on-dark { color: #fff; border-color: rgba(255,255,255,.7); }
+@keyframes fade-up { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@keyframes pop { from { opacity: 0; transform: scale(.3); } to { opacity: 1; transform: scale(1); } }
