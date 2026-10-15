@@ -23,9 +23,9 @@ const check = (cond, msg) => { if (!cond) throw new Error(msg); console.log('✓
 const host = await open('host.html?local&quiz=e2e');
 await host.evaluate(() => localStorage.clear());
 await host.reload();
-await host.click('summary');
+await host.click('#setup summary');
 await host.setInputFiles('#csv-file', 'voorbeeld-vragen.csv');
-await host.waitForSelector('#setup-status.ok');
+await host.waitForSelector('#setup-status.ok', { state: 'attached' });
 check((await host.textContent('#setup-status')).includes('10 vragen'), 'vragen geladen uit CSV');
 
 const players = [];

@@ -35,6 +35,8 @@ function render() {
   lastHtml = html;
   if (!keep) panel.innerHTML = html;
   if (l.phase === 'lobby') drawQr();
+  // Buiten het beginscherm blijven QR-code en link bereikbaar onder het hoofdscherm.
+  $('invite').hidden = l.phase === 'lobby';
   if (l.phase === 'winner') celebrate(panel);
   tick();
   renderSetup();
@@ -60,15 +62,22 @@ function lobbyHtml() {
     <h2>${teamIds().length} teams aangemeld</h2>
     <ul class="teams">${names || '<li class="muted">Nog niemand…</li>'}</ul>
     <p class="muted">${quizSummary()}</p>
-    ${first ? `<button class="primary big" data-act="start" data-idx="0">Start ${esc(S.rounds[S.parts[first].round].name)}</button>` : ''}
+    ${first ? `<button class="primary big" data-act="start" data-idx="0">Start quiz</button>` : ''}
   </section>`;
 }
 
-function drawQr() {
-  const el = $('qr');
+function drawQr(id = 'qr') {
+  const el = $(id);
   if (!el || !window.QRCode) return;
   new window.QRCode(el, { text: playerUrl(code), width: 240, height: 240, correctLevel: window.QRCode.CorrectLevel.M });
 }
+
+$('invite-link').href = playerUrl(code);
+$('invite-link').textContent = playerUrl(code);
+drawQr('qr-invite');
+$('copy-invite').addEventListener('click', (e) => {
+  navigator.clipboard?.writeText(playerUrl(code)).then(() => { e.target.textContent = 'Gekopieerd ✓'; });
+});
 
 function answersFor(pid) {
   return S.answers?.[pid] || {};
