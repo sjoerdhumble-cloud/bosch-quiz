@@ -141,10 +141,14 @@ function nextButtons() {
   const roundEnds = !next || S.parts[next].round !== l.round;
   const btns = [];
   if (!next) btns.push('<button class="primary big" data-act="final">Toon eindstand</button>');
+  else if (!roundEnds && isFinalRound(l.round)) btns.push('<button class="primary big" data-act="top3">Toon top 3</button>', `<button class="secondary" data-act="start" data-idx="${l.partIdx + 1}">Volgende vraag</button>`);
   else if (roundEnds) btns.push('<button class="primary big" data-act="standings">Toon tussenstand</button>', `<button class="secondary" data-act="start" data-idx="${l.partIdx + 1}">Door zonder stand</button>`);
   else btns.push(`<button class="primary big" data-act="start" data-idx="${l.partIdx + 1}">Volgende vraag</button>`, '<button class="secondary" data-act="standings">Toon stand</button>');
   return `<div class="row">${btns.join('')}</div>`;
 }
+
+// In de laatste ronde (de finale) komt na elke vraag een top 3.
+const isFinalRound = (round) => round === Math.max(...Object.keys(S.rounds || {}).map(Number));
 
 function standingsScreen() {
   const l = live();
@@ -159,8 +163,8 @@ function standingsScreen() {
   const stale = JSON.stringify(list) !== JSON.stringify(l.standings?.list);
   return `<section class="card">
     <h1>${esc(l.standings?.title || '')}</h1>
-    <div class="row">${btn}${stale ? `<button class="secondary" data-act="${l.phase === 'final' ? 'final' : 'standings'}">Stand bijwerken</button>` : ''}</div>
-    ${standingsHtml(list, { final: l.phase === 'final' })}
+    <div class="row">${btn}${stale ? `<button class="secondary" data-act="${l.phase === 'final' ? 'final' : l.standings?.top ? 'top3' : 'standings'}">Stand bijwerken</button>` : ''}</div>
+    ${standingsHtml(list, { final: l.phase === 'final', limit: l.standings?.top })}
   </section>`;
 }
 
@@ -213,6 +217,12 @@ function showStandings(final) {
   be.update(base, { 'live/phase': final ? 'final' : 'standings', 'live/standings': { title, final, list: computeStandings(S) } });
 }
 
+function showTop3() {
+  const l = live();
+  const title = `Top 3 na vraag ${l.partNo} van ${l.partsInRound}`;
+  be.update(base, { 'live/phase': 'standings', 'live/standings': { title, final: false, top: 3, list: computeStandings(S) } });
+}
+
 // Tik op een antwoordgroep: wissel tussen goed en fout voor alle teams met dat antwoord.
 function toggleGroup(li) {
   const makeCorrect = li.dataset.status !== 'correct';
@@ -229,6 +239,7 @@ panel.addEventListener('click', (e) => {
     if (act === 'extend') extend();
     if (act === 'close') closePart();
     if (act === 'standings') showStandings(false);
+    if (act === 'top3') showTop3();
     if (act === 'final') showStandings(true);
   }
   const g = e.target.closest('.group');
