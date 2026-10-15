@@ -1,6 +1,7 @@
 import { connect } from './backend.js';
 import { computeStandings, evaluate, normalize, DEFAULT_BONUS } from './scoring.js';
 import { parseCSV, buildQuiz, sheetCsvUrl, publicQuestion } from './sheet.js';
+import { collageHtml, winnerHtml, celebrate, preloadPhotos } from './finale.js';
 import { esc, quizCode, playerUrl, timerHtml, partLabel, photoHtml, standingsHtml } from './common.js';
 
 const code = quizCode();
@@ -10,6 +11,7 @@ const panel = document.getElementById('panel');
 const $ = (id) => document.getElementById(id);
 let S = {};
 let closing = null; // voorkomt dubbel sluiten van hetzelfde onderdeel
+let lastHtml = '';
 
 be.onConnected((ok) => $('offline').hidden = ok);
 be.on(base, (v) => {
@@ -26,9 +28,14 @@ function render() {
   const l = live();
   const html = {
     lobby: lobbyHtml, question: questionHtml, closed: closedHtml, standings: standingsScreen, final: standingsScreen,
+    photos: photosScreen, winner: winnerScreen,
   }[l.phase]?.() ?? '';
-  panel.innerHTML = html;
+  // Collage en winnaar niet opnieuw tekenen als er niets verandert, anders starten de animaties opnieuw.
+  const keep = ['photos', 'winner'].includes(l.phase) && html === lastHtml;
+  lastHtml = html;
+  if (!keep) panel.innerHTML = html;
   if (l.phase === 'lobby') drawQr();
+  if (l.phase === 'winner') celebrate(panel);
   tick();
   renderSetup();
 }
@@ -140,7 +147,7 @@ function nextButtons() {
   const next = order()[l.partIdx + 1];
   const roundEnds = !next || S.parts[next].round !== l.round;
   const btns = [];
-  if (!next) btns.push('<button class="primary big" data-act="final">Toon eindstand</button>');
+  if (!next) btns.push('<button class="primary big" data-act="photos">Afsluiten met foto\'s</button>', '<button class="secondary" data-act="standings">Eerst de stand</button>');
   else if (!roundEnds && isFinalRound(l.round)) btns.push('<button class="primary big" data-act="top3">Toon top 3</button>', `<button class="secondary" data-act="start" data-idx="${l.partIdx + 1}">Volgende vraag</button>`);
   else if (roundEnds) btns.push('<button class="primary big" data-act="standings">Toon tussenstand</button>', `<button class="secondary" data-act="start" data-idx="${l.partIdx + 1}">Door zonder stand</button>`);
   else btns.push(`<button class="primary big" data-act="start" data-idx="${l.partIdx + 1}">Volgende vraag</button>`, '<button class="secondary" data-act="standings">Toon stand</button>');
@@ -158,7 +165,7 @@ function standingsScreen() {
   if (l.phase === 'standings') {
     btn = next
       ? `<button class="primary big" data-act="start" data-idx="${l.partIdx + 1}">Start ${S.parts[next].round !== l.round ? esc(S.rounds[S.parts[next].round].name) : 'volgende vraag'}</button>`
-      : '<button class="primary big" data-act="final">Toon eindstand</button>';
+      : '<button class="primary big" data-act="photos">Afsluiten met foto\'s</button>';
   }
   const stale = JSON.stringify(list) !== JSON.stringify(l.standings?.list);
   return `<section class="card">
@@ -166,6 +173,15 @@ function standingsScreen() {
     <div class="row">${btn}${stale ? `<button class="secondary" data-act="${l.phase === 'final' ? 'final' : l.standings?.top ? 'top3' : 'standings'}">Stand bijwerken</button>` : ''}</div>
     ${standingsHtml(list, { final: l.phase === 'final', limit: l.standings?.top })}
   </section>`;
+}
+
+function photosScreen() {
+  return collageHtml('<button class="primary big" data-act="winner">Maak de winnaar bekend</button>');
+}
+
+function winnerScreen() {
+  const list = live().standings?.list || computeStandings(S);
+  return winnerHtml(list, null, '<button class="secondary on-dark" data-act="final">Toon eindstand</button>');
 }
 
 function tick() {
@@ -217,6 +233,15 @@ function showStandings(final) {
   be.update(base, { 'live/phase': final ? 'final' : 'standings', 'live/standings': { title, final, list: computeStandings(S) } });
 }
 
+function showPhotos() {
+  be.update(base, { 'live/phase': 'photos' });
+}
+
+// De winnaar wordt bepaald op het moment dat de quizmaster doorklikt.
+function showWinner() {
+  be.update(base, { 'live/phase': 'winner', 'live/standings': { title: 'Eindstand', final: true, list: computeStandings(S) } });
+}
+
 function showTop3() {
   const l = live();
   const title = `Top 3 na vraag ${l.partNo} van ${l.partsInRound}`;
@@ -241,6 +266,8 @@ panel.addEventListener('click', (e) => {
     if (act === 'standings') showStandings(false);
     if (act === 'top3') showTop3();
     if (act === 'final') showStandings(true);
+    if (act === 'photos') showPhotos();
+    if (act === 'winner') showWinner();
   }
   const g = e.target.closest('.group');
   if (g) toggleGroup(g);
@@ -327,3 +354,4 @@ $('reset-teams').addEventListener('click', () => {
 });
 
 if (be.kind === 'local') $('mode').hidden = false;
+preloadPhotos();
