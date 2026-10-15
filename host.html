@@ -20,7 +20,12 @@
     <details id="setup" class="card">
       <summary>Vragen en instellingen</summary>
       <p id="summary" class="muted"></p>
-      <label>Link naar je Google Sheet
+      <label>Vragenlijst uit GitHub (map vragen)
+        <select id="repo-list"><option value="">Lijsten ophalen…</option></select>
+      </label>
+      <button id="load-repo" class="primary">Deze vragen laden</button>
+      <hr>
+      <label>Of link naar je Google Sheet
         <input id="sheet" placeholder="https://docs.google.com/spreadsheets/d/…">
       </label>
       <button id="load-sheet" class="primary">Vragen laden uit Sheet</button>

@@ -47,8 +47,8 @@ a { color: var(--accent); }
 body.player > #app > main.card { margin: 16px; max-width: 608px; }
 @media (min-width: 672px) { body.player > #app > main.card { margin: 16px auto; } }
 
-input { width: 100%; font: inherit; padding: 14px; border: 2px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); margin: 6px 0 12px; }
-input:focus { outline: none; border-color: var(--accent); }
+input, select { width: 100%; font: inherit; padding: 14px; border: 2px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); margin: 6px 0 12px; }
+input:focus, select:focus { outline: none; border-color: var(--accent); }
 input:disabled { background: #f1ede6; color: var(--muted); }
 label { display: block; font-weight: 600; margin-top: 8px; }
 label.file input { padding: 8px; }
