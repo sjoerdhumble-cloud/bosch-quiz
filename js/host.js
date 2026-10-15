@@ -280,8 +280,11 @@ panel.addEventListener('click', (e) => {
 
 // --- Vragen en instellingen ---
 
+let setupOpened = false;
+
 function renderSetup() {
   $('summary').textContent = quizSummary();
+  if (!order().length && !setupOpened) { $('setup').open = true; setupOpened = true; }
   if (document.activeElement?.closest('#setup')) return;
   $('title').value = S.meta?.title || '';
   $('bonus').value = Math.round((S.meta?.bonusPct ?? DEFAULT_BONUS) * 100);
@@ -326,6 +329,35 @@ $('load-sheet').addEventListener('click', async () => {
     await loadQuiz(text, url);
   } catch (err) {
     status(`Kon de Sheet niet ophalen (${esc(err.message)}). Zet delen op "Iedereen met de link kan bekijken", of gebruik Bestand > Delen > Publiceren op internet en plak die link.`, true);
+  }
+});
+
+// Vragenlijsten die in de map vragen/ van de repo staan.
+const REPO = 'sjoerdhumble-cloud/bosch-quiz';
+
+async function listRepoQuizzes() {
+  let names = ['vrijdag.csv'];
+  try {
+    const res = await fetch(`https://api.github.com/repos/${REPO}/contents/vragen`);
+    if (res.ok) {
+      const found = (await res.json()).map((f) => f.name).filter((n) => n.toLowerCase().endsWith('.csv'));
+      if (found.length) names = found;
+    }
+  } catch { /* zonder GitHub-overzicht blijft de standaardlijst staan */ }
+  $('repo-list').innerHTML = names.map((n) => `<option value="${esc(n)}">${esc(n.replace(/\.csv$/i, ''))}</option>`).join('');
+}
+listRepoQuizzes();
+
+$('load-repo').addEventListener('click', async () => {
+  const name = $('repo-list').value;
+  if (!name) return status('Kies eerst een vragenlijst.', true);
+  status('Bezig met laden…');
+  try {
+    const res = await fetch(`vragen/${encodeURIComponent(name)}`, { cache: 'no-store' });
+    if (!res.ok) throw new Error(res.status);
+    await loadQuiz(await res.text());
+  } catch (err) {
+    status(`Kon ${esc(name)} niet ophalen (${esc(err.message)}).`, true);
   }
 });
 
